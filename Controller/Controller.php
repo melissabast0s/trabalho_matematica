@@ -1,210 +1,214 @@
 <?php
 
-namespace App;
+namespace Controller;
 
 use InvalidArgumentException;
 use DomainException;
 
 class Controller
 {
-    public function validarMatriz(array $A): void
+    public function validarMatriz(array $matriz): void
     {
-        if (empty($A) || !is_array($A[0])) {
+        if (empty($matriz) || !isset($matriz[0]) || !is_array($matriz[0])) {
             throw new InvalidArgumentException("A matriz deve ser um array bidimensional nao vazio.");
         }
-        $cols = count($A[0]);
-        foreach ($A as $row) {
-            if (!is_array($row) || count($row) !== $cols) {
+
+        $colunas = count($matriz[0]);
+
+        foreach ($matriz as $linha) {
+            if (!is_array($linha) || count($linha) !== $colunas) {
                 throw new InvalidArgumentException("A matriz possui linhas com tamanhos inconsistentes.");
             }
-            foreach ($row as $val) {
-                if (!is_numeric($val)) {
+
+            foreach ($linha as $valor) {
+                if (!is_numeric($valor)) {
                     throw new InvalidArgumentException("Todos os elementos da matriz devem ser numericos.");
                 }
             }
         }
     }
 
-    public function somarMatrizes(array $A, array $B): array
+    public function somarMatrizes(array $matrizA, array $matrizB): array
     {
-        $this->validarMatriz($A);
-        $this->validarMatriz($B);
+        $this->validarMatriz($matrizA);
+        $this->validarMatriz($matrizB);
 
-        $m = count($A);
-        $n = count($A[0]);
+        $linhasA = count($matrizA);
+        $colunasA = count($matrizA[0]);
 
-        if (count($B) !== $m || count($B[0]) !== $n) {
+        if (count($matrizB) !== $linhasA || count($matrizB[0]) !== $colunasA) {
             throw new InvalidArgumentException("Dimensoes incompativeis para adicao de matrizes.");
         }
 
-        $C = [];
-        for ($i = 0; $i < $m; $i++) {
-            for ($j = 0; $j < $n; $j++) {
-                $C[$i][$j] = $A[$i][$j] + $B[$i][$j];
+        $matrizResultado = [];
+        for ($i = 0; $i < $linhasA; $i++) {
+            for ($j = 0; $j < $colunasA; $j++) {
+                $matrizResultado[$i][$j] = $matrizA[$i][$j] + $matrizB[$i][$j];
             }
         }
-        return $C;
+        return $matrizResultado;
     }
 
-    public function subtrairMatrizes(array $A, array $B): array
+    public function subtrairMatrizes(array $matrizA, array $matrizB): array
     {
-        $this->validarMatriz($A);
-        $this->validarMatriz($B);
+        $this->validarMatriz($matrizA);
+        $this->validarMatriz($matrizB);
 
-        $m = count($A);
-        $n = count($A[0]);
+        $linhasA = count($matrizA);
+        $colunasA = count($matrizA[0]);
 
-        if (count($B) !== $m || count($B[0]) !== $n) {
+        if (count($matrizB) !== $linhasA || count($matrizB[0]) !== $colunasA) {
             throw new InvalidArgumentException("Dimensoes incompativeis para subtracao de matrizes.");
         }
 
-        $C = [];
-        for ($i = 0; $i < $m; $i++) {
-            for ($j = 0; $j < $n; $j++) {
-                $C[$i][$j] = $A[$i][$j] - $B[$i][$j];
+        $matrizResultado = [];
+        for ($i = 0; $i < $linhasA; $i++) {
+            for ($j = 0; $j < $colunasA; $j++) {
+                $matrizResultado[$i][$j] = $matrizA[$i][$j] - $matrizB[$i][$j];
             }
         }
-        return $C;
+        return $matrizResultado;
     }
 
-    public function multiplicarMatrizes(array $A, array $B): array
+    public function multiplicarMatrizes(array $matrizA, array $matrizB): array
     {
-        $this->validarMatriz($A);
-        $this->validarMatriz($B);
+        $this->validarMatriz($matrizA);
+        $this->validarMatriz($matrizB);
 
-        $m = count($A);
-        $n = count($A[0]);
-        $p = count($B);
-        $q = count($B[0]);
+        $linhasA = count($matrizA);
+        $colunasA = count($matrizA[0]);
+        $linhasB = count($matrizB);
+        $colunasB = count($matrizB[0]);
 
-        if ($n !== $p) {
+        if ($colunasA !== $linhasB) {
             throw new InvalidArgumentException("Dimensoes incompativeis para multiplicacao: colunas de A devem ser iguais as linhas de B.");
         }
 
-        $C = array_fill(0, $m, array_fill(0, $q, 0.0));
+        $matrizResultado = array_fill(0, $linhasA, array_fill(0, $colunasB, 0.0));
 
-        for ($i = 0; $i < $m; $i++) {
-            for ($j = 0; $j < $q; $j++) {
+        for ($i = 0; $i < $linhasA; $i++) {
+            for ($j = 0; $j < $colunasB; $j++) {
                 $soma = 0.0;
-                for ($k = 0; $k < $n; $k++) {
-                    $soma += $A[$i][$k] * $B[$k][$j];
+                for ($k = 0; $k < $colunasA; $k++) {
+                    $soma += $matrizA[$i][$k] * $matrizB[$k][$j];
                 }
-                $C[$i][$j] = $soma;
+                $matrizResultado[$i][$j] = $soma;
             }
         }
-        return $C;
+        return $matrizResultado;
     }
 
-   
-    public function transporMatriz(array $A): array
+    public function transporMatriz(array $matriz): array
     {
-        $this->validarMatriz($A);
-        $m = count($A);
-        $n = count($A[0]);
+        $this->validarMatriz($matriz);
+        $linhas = count($matriz);
+        $colunas = count($matriz[0]);
 
-        $T = [];
-        for ($i = 0; $i < $m; $i++) {
-            for ($j = 0; $j < $n; $j++) {
-                $T[$j][$i] = $A[$i][$j];
+        $matrizTransposta = [];
+        for ($i = 0; $i < $linhas; $i++) {
+            for ($j = 0; $j < $colunas; $j++) {
+                $matrizTransposta[$j][$i] = $matriz[$i][$j];
             }
         }
-        return $T;
+        return $matrizTransposta;
     }
-    public function calcularDeterminante(array $A): float
+
+    public function calcularDeterminante(array $matriz): float
     {
-        $this->validarMatriz($A);
-        $n = count($A);
-        if ($n !== count($A[0])) {
+        $this->validarMatriz($matriz);
+        $tamanho = count($matriz);
+
+        if ($tamanho !== count($matriz[0])) {
             throw new InvalidArgumentException("O determinante so pode ser calculado para matrizes quadradas.");
         }
 
-        if ($n === 1) {
-            return (float)$A[0][0];
+        if ($tamanho === 1) {
+            return (float)$matriz[0][0];
         }
 
-        if ($n === 2) {
-            return (float)($A[0][0] * $A[1][1] - $A[0][1] * $A[1][0]);
+        if ($tamanho === 2) {
+            return (float)($matriz[0][0] * $matriz[1][1] - $matriz[0][1] * $matriz[1][0]);
         }
 
-        $det = 0.0;
-        for ($j = 0; $j < $n; $j++) {
-            $submatriz = $this->obterSubmatriz($A, 0, $j);
+        $determinante = 0.0;
+        for ($j = 0; $j < $tamanho; $j++) {
+            $submatriz = $this->obterSubmatriz($matriz, 0, $j);
             $sinal = ($j % 2 === 0) ? 1.0 : -1.0;
-            $det += $sinal * $A[0][$j] * $this->calcularDeterminante($submatriz);
+            $determinante += $sinal * $matriz[0][$j] * $this->calcularDeterminante($submatriz);
         }
 
-        return $det;
+        return $determinante;
     }
 
-  
-    public function resolverSistemaLinear(array $A, array $b): array
+    public function resolverSistemaLinear(array $matrizA, array $vetorB): array
     {
-        $this->validarMatriz($A);
-        $n = count($A);
+        $this->validarMatriz($matrizA);
+        $tamanho = count($matrizA);
 
-        if ($n !== count($A[0])) {
+        if ($tamanho !== count($matrizA[0])) {
             throw new InvalidArgumentException("A matriz de coeficientes deve ser quadrada.");
         }
 
-        if (count($b) !== $n) {
+        if (count($vetorB) !== $tamanho) {
             throw new InvalidArgumentException("O numero de elementos do vetor b deve ser igual ao numero de linhas da matriz A.");
         }
 
-        $M = [];
-        for ($i = 0; $i < $n; $i++) {
-            $M[$i] = $A[$i];
-            $M[$i][$n] = (float)$b[$i];
+        $matrizAumentada = [];
+        for ($i = 0; $i < $tamanho; $i++) {
+            $matrizAumentada[$i] = $matrizA[$i];
+            $matrizAumentada[$i][$tamanho] = (float)$vetorB[$i];
         }
 
-        for ($i = 0; $i < $n; $i++) {
-            $maxRow = $i;
-            for ($k = $i + 1; $k < $n; $k++) {
-                if (abs($M[$k][$i]) > abs($M[$maxRow][$i])) {
-                    $maxRow = $k;
+        for ($i = 0; $i < $tamanho; $i++) {
+            $linhaPivo = $i;
+            for ($k = $i + 1; $k < $tamanho; $k++) {
+                if (abs($matrizAumentada[$k][$i]) > abs($matrizAumentada[$linhaPivo][$i])) {
+                    $linhaPivo = $k;
                 }
             }
 
-            if ($maxRow !== $i) {
-                $temp = $M[$i];
-                $M[$i] = $M[$maxRow];
-                $M[$maxRow] = $temp;
+            if ($linhaPivo !== $i) {
+                $temp = $matrizAumentada[$i];
+                $matrizAumentada[$i] = $matrizAumentada[$linhaPivo];
+                $matrizAumentada[$linhaPivo] = $temp;
             }
-            if (abs($M[$i][$i]) < 1e-11) {
+
+            if (abs($matrizAumentada[$i][$i]) < 1e-11) {
                 throw new DomainException("O sistema e impossivel ou indeterminado (matriz singular ou pivô nulo).");
             }
 
-            for ($k = $i + 1; $k < $n; $k++) {
-                $fator = $M[$k][$i] / $M[$i][$i];
-                for ($j = $i; $j <= $n; $j++) {
-                    $M[$k][$j] -= $fator * $M[$i][$j];
+            for ($k = $i + 1; $k < $tamanho; $k++) {
+                $fator = $matrizAumentada[$k][$i] / $matrizAumentada[$i][$i];
+                for ($j = $i; $j <= $tamanho; $j++) {
+                    $matrizAumentada[$k][$j] -= $fator * $matrizAumentada[$i][$j];
                 }
             }
         }
 
-        $x = array_fill(0, $n, 0.0);
-        for ($i = $n - 1; $i >= 0; $i--) {
+        $solucao = array_fill(0, $tamanho, 0.0);
+        for ($i = $tamanho - 1; $i >= 0; $i--) {
             $soma = 0.0;
-            for ($j = $i + 1; $j < $n; $j++) {
-                $soma += $M[$i][$j] * $x[$j];
+            for ($j = $i + 1; $j < $tamanho; $j++) {
+                $soma += $matrizAumentada[$i][$j] * $solucao[$j];
             }
-            $x[$i] = ($M[$i][$n] - $soma) / $M[$i][$i];
+            $solucao[$i] = ($matrizAumentada[$i][$tamanho] - $soma) / $matrizAumentada[$i][$i];
         }
 
-        return $x;
+        return $solucao;
     }
 
-    private function obterSubmatriz(array $A, int $linhaExcluir, int $colunaExcluir): array
+    private function obterSubmatriz(array $matriz, int $linhaExcluir, int $colunaExcluir): array
     {
-        $sub = [];
-        foreach ($A as $i => $row) {
+        $submatriz = [];
+        foreach ($matriz as $i => $linha) {
             if ($i === $linhaExcluir) continue;
             $novaLinha = [];
-            foreach ($row as $j => $val) {
+            foreach ($linha as $j => $valor) {
                 if ($j === $colunaExcluir) continue;
-                $novaLinha[] = $val;
+                $novaLinha[] = $valor;
             }
-            $sub[] = $novaLinha;
+            $submatriz[] = $novaLinha;
         }
-        return $sub;
+        return $submatriz;
     }
 }

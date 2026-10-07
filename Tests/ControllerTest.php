@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Controller;
+use Controller\Controller; 
 use InvalidArgumentException;
 use DomainException;
 use PHPUnit\Framework\TestCase;
@@ -18,174 +18,175 @@ class ControllerTest extends TestCase
 
     public function testSomaDeMatrizesValidas(): void
     {
-        $A = [[1, 2], [3, 4]];
-        $B = [[5, 6], [7, 8]];
+        $matrizA = [[1, 2], [3, 4]];
+        $matrizB = [[5, 6], [7, 8]];
         $esperado = [[6, 8], [10, 12]];
 
-        $resultado = $this->controller->somarMatrizes($A, $B);
+        $resultado = $this->controller->somarMatrizes($matrizA, $matrizB);
         $this->assertEquals($esperado, $resultado);
     }
 
     public function testMultiplicacaoDeMatrizesValida(): void
     {
-        $A = [[1, 2, 3], [4, 5, 6]];
-        $B = [[7, 8], [9, 1], [2, 3]];
+        $matrizA = [[1, 2, 3], [4, 5, 6]];
+        $matrizB = [[7, 8], [9, 1], [2, 3]];
         $esperado = [[31, 19], [85, 55]];
 
-        $resultado = $this->controller->multiplicarMatrizes($A, $B);
+        $resultado = $this->controller->multiplicarMatrizes($matrizA, $matrizB);
         $this->assertEquals($esperado, $resultado);
     }
 
     public function testDeterminanteMatriz3x3(): void
     {
-        $A = [
+        $matriz = [
             [6, 1, 1],
             [4, -2, 5],
             [2, 8, 7]
         ];
 
-        $resultado = $this->controller->calcularDeterminante($A);
+        $resultado = $this->controller->calcularDeterminante($matriz);
         $this->assertEqualsWithDelta(-306.0, $resultado, 0.0001);
     }
 
     public function testSistemaLinearPossivelDeterminado(): void
     {
-        $A = [
+        $matrizA = [
             [2, 1, -1],
             [-3, -1, 2],
             [-2, 1, 2]
         ];
-        $b = [8, -11, -3];
+        $vetorB = [8, -11, -3];
 
-        $x = $this->controller->resolverSistemaLinear($A, $b);
+        $solucao = $this->controller->resolverSistemaLinear($matrizA, $vetorB);
 
-        $this->assertEqualsWithDelta(2.0, $x[0], 0.0001);
-        $this->assertEqualsWithDelta(3.0, $x[1], 0.0001);
-        $this->assertEqualsWithDelta(-1.0, $x[2], 0.0001);
+        $this->assertEqualsWithDelta(2.0, $solucao[0], 0.0001);
+        $this->assertEqualsWithDelta(3.0, $solucao[1], 0.0001);
+        $this->assertEqualsWithDelta(-1.0, $solucao[2], 0.0001);
     }
+
     public function testSomaComMatrizNula(): void
     {
-        $A = [[3, -2], [5, 1]];
-        $Nula = [[0, 0], [0, 0]];
+        $matrizA = [[3, -2], [5, 1]];
+        $matrizNula = [[0, 0], [0, 0]];
 
-        $resultado = $this->controller->somarMatrizes($A, $Nula);
-        $this->assertEquals($A, $resultado);
+        $resultado = $this->controller->somarMatrizes($matrizA, $matrizNula);
+        $this->assertEquals($matrizA, $resultado);
     }
 
     public function testSomaDeMatrizes1x1(): void
     {
-        $A = [[15.5]];
-        $B = [[4.5]];
+        $matrizA = [[15.5]];
+        $matrizB = [[4.5]];
 
-        $resultado = $this->controller->somarMatrizes($A, $B);
+        $resultado = $this->controller->somarMatrizes($matrizA, $matrizB);
         $this->assertEqualsWithDelta([[20.0]], $resultado, 0.0001);
     }
 
     public function testMultiplicacaoPorMatrizIdentidade(): void
     {
-        $A = [[4, 7], [2, 9]];
-        $I = [[1, 0], [0, 1]];
+        $matrizA = [[4, 7], [2, 9]];
+        $matrizIdentidade = [[1, 0], [0, 1]];
 
-        $resultado = $this->controller->multiplicarMatrizes($A, $I);
-        $this->assertEquals($A, $resultado);
+        $resultado = $this->controller->multiplicarMatrizes($matrizA, $matrizIdentidade);
+        $this->assertEquals($matrizA, $resultado);
     }
 
     public function testDeterminanteMatriz1x1(): void
     {
-        $A = [[-7.5]];
-        $resultado = $this->controller->calcularDeterminante($A);
+        $matriz = [[-7.5]];
+        $resultado = $this->controller->calcularDeterminante($matriz);
         $this->assertEqualsWithDelta(-7.5, $resultado, 0.0001);
     }
 
-  public function testSistemaComPivoInicialNuloComTrocaDeLinhas(): void
-{
-    $A = [
-        [0, 2, 1],
-        [1, -1, 1],
-        [2, 1, -1]
-    ];
-    
-    $b = [5, 0, 3];
+    public function testSistemaComPivoInicialNuloComTrocaDeLinhas(): void
+    {
+        $matrizA = [
+            [0, 2, 1],
+            [1, -1, 1],
+            [2, 1, -1]
+        ];
+        $vetorB = [5, 0, 3];
 
-    $x = $this->controller->resolverSistemaLinear($A, $b);
+        $solucao = $this->controller->resolverSistemaLinear($matrizA, $vetorB);
 
-    $this->assertEqualsWithDelta(1.0, $x[0], 0.0001);
-    $this->assertEqualsWithDelta(2.0, $x[1], 0.0001);
-    $this->assertEqualsWithDelta(1.0, $x[2], 0.0001);
-}
+        $this->assertEqualsWithDelta(1.0, $solucao[0], 0.0001);
+        $this->assertEqualsWithDelta(2.0, $solucao[1], 0.0001);
+        $this->assertEqualsWithDelta(1.0, $solucao[2], 0.0001);
+    }
+
     public function testSomaComDimensoesIncompativeisLancaExcecao(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $A = [[1, 2, 3], [4, 5, 6]];
-        $B = [[1, 2], [3, 4], [5, 6]];
+        $matrizA = [[1, 2, 3], [4, 5, 6]];
+        $matrizB = [[1, 2], [3, 4], [5, 6]];
 
-        $this->controller->somarMatrizes($A, $B);
+        $this->controller->somarMatrizes($matrizA, $matrizB);
     }
 
     public function testMultiplicacaoComDimensoesIncompativeisLancaExcecao(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $A = [[1, 2], [3, 4]];
-        $B = [[1, 2], [3, 4], [5, 6]];
+        $matrizA = [[1, 2], [3, 4]];
+        $matrizB = [[1, 2], [3, 4], [5, 6]];
 
-        $this->controller->multiplicarMatrizes($A, $B);
+        $this->controller->multiplicarMatrizes($matrizA, $matrizB);
     }
 
     public function testDeterminanteMatrizNaoQuadradaLancaExcecao(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $A = [[1, 2, 3], [4, 5, 6]];
+        $matriz = [[1, 2, 3], [4, 5, 6]];
 
-        $this->controller->calcularDeterminante($A);
+        $this->controller->calcularDeterminante($matriz);
     }
 
     public function testDeterminanteMatrizSingularRetornaZero(): void
     {
-        $A = [
+        $matriz = [
             [1, 2, 3],
             [2, 4, 6],
             [1, 1, 1]
         ];
-        $this->assertEqualsWithDelta(0.0, $this->controller->calcularDeterminante($A), 0.0001);
+        $this->assertEqualsWithDelta(0.0, $this->controller->calcularDeterminante($matriz), 0.0001);
     }
 
     public function testSistemaImpossivelOuIndeterminadoLancaExcecao(): void
     {
         $this->expectException(DomainException::class);
-        $A = [
+        $matrizA = [
             [1, 1, 1],
             [2, 2, 2],
             [3, 3, 3]
         ];
-        $b = [1, 2, 3];
+        $vetorB = [1, 2, 3];
 
-        $this->controller->resolverSistemaLinear($A, $b);
+        $this->controller->resolverSistemaLinear($matrizA, $vetorB);
     }
 
     public function testMatrizComVetorBIncompativelLancaExcecao(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $A = [[2, 1], [1, 3]];
-        $b = [8, 14, 20];
+        $matrizA = [[2, 1], [1, 3]];
+        $vetorB = [8, 14, 20];
 
-        $this->controller->resolverSistemaLinear($A, $b);
+        $this->controller->resolverSistemaLinear($matrizA, $vetorB);
     }
 
     public function testEntradaComDadosNaoNumericosLancaExcecao(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $A = [["texto", 2], [3, 4]];
-        $B = [[1, 2], [3, 4]];
+        $matrizA = [["texto", 2], [3, 4]];
+        $matrizB = [[1, 2], [3, 4]];
 
-        $this->controller->somarMatrizes($A, $B);
+        $this->controller->somarMatrizes($matrizA, $matrizB);
     }
 
     public function testMultiplicacaoComElementosDecimaisEPrecisao(): void
     {
-        $A = [[1.5, 2.2], [0.5, 4.0]];
-        $B = [[2.0, 1.1], [3.0, 0.5]];
+        $matrizA = [[1.5, 2.2], [0.5, 4.0]];
+        $matrizB = [[2.0, 1.1], [3.0, 0.5]];
 
-        $resultado = $this->controller->multiplicarMatrizes($A, $B);
+        $resultado = $this->controller->multiplicarMatrizes($matrizA, $matrizB);
 
         $this->assertEqualsWithDelta(9.6, $resultado[0][0], 0.0001);
         $this->assertEqualsWithDelta(2.75, $resultado[0][1], 0.0001);
