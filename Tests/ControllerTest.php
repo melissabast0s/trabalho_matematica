@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use App\Controller;
+use Controller;
 use InvalidArgumentException;
 use DomainException;
 use PHPUnit\Framework\TestCase;
@@ -97,22 +97,22 @@ class ControllerTest extends TestCase
         $this->assertEqualsWithDelta(-7.5, $resultado, 0.0001);
     }
 
-    public function testSistemaComPivoInicialNuloComTrocaDeLinhas(): void
-    {
-        $A = [
-            [0, 2, 1],
-            [1, -1, 1],
-            [2, 1, -1]
-        ];
-        $b = [5, 4, 1];
+  public function testSistemaComPivoInicialNuloComTrocaDeLinhas(): void
+{
+    $A = [
+        [0, 2, 1],
+        [1, -1, 1],
+        [2, 1, -1]
+    ];
+    
+    $b = [5, 0, 3];
 
-        $x = $this->controller->resolverSistemaLinear($A, $b);
+    $x = $this->controller->resolverSistemaLinear($A, $b);
 
-        $this->assertEqualsWithDelta(1.0, $x[0], 0.0001);
-        $this->assertEqualsWithDelta(2.0, $x[1], 0.0001);
-        $this->assertEqualsWithDelta(1.0, $x[2], 0.0001);
-    }
-
+    $this->assertEqualsWithDelta(1.0, $x[0], 0.0001);
+    $this->assertEqualsWithDelta(2.0, $x[1], 0.0001);
+    $this->assertEqualsWithDelta(1.0, $x[2], 0.0001);
+}
     public function testSomaComDimensoesIncompativeisLancaExcecao(): void
     {
         $this->expectException(InvalidArgumentException::class);
